@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>⚽ Soccer Predictor Pro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f0f2f5;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1a73e8; text-align: center; }
+        .input-group { 
+            display: flex; 
+            gap: 10px; 
+            margin: 20px 0; 
+            flex-wrap: wrap;
+        }
+        input { 
+            padding: 12px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            flex: 1;
+            min-width: 200px;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #1a73e8; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #0d5bb7; }
+        #result { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            border-radius: 8px; 
+            border-left: 4px solid #1a73e8;
+        }
+        .prediction-item { margin: 10px 0; }
+        .confidence { font-weight: bold; color: #1a73e8; }
+        .affiliate { 
+            background: #fff3cd; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ AI Soccer Predictor</h1>
+        <p>Enter any two soccer teams to get AI-powered match predictions</p>
+        
+        <div class="input-group">
+            <input type="text" id="homeTeam" placeholder="Home Team (e.g., Arsenal)" value="Arsenal">
+            <input type="text" id="awayTeam" placeholder="Away Team (e.g., Chelsea)" value="Chelsea">
+            <button onclick="getPrediction()">🔮 Predict Match</button>
+        </div>
+        
+        <div id="result">
+            <p>Enter teams above and click "Predict Match"</p>
+        </div>
+
+        <div class="affiliate">
+            <p><strong>💡 Betting Tip:</strong> Compare odds across different bookmakers for the best value.</p>
+            <p><a href="https://www.bet365.com/#/AX/K%2E1%2E0" target="_blank">🔗 Visit Bet365 for competitive odds</a></p>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center;">
+            <p><strong>🚀 Premium Features Coming Soon:</strong></p>
+            <button onclick="showPremium()">🌟 Get Early Access</button>
+        </div>
+    </div>
+
+    <script>
+        // Replace with your actual Railway URL
+        const API_BASE = "https://soccer-predictor.up.railway.app/api/v1";
+        
+        async function getPrediction() {
+            const homeTeam = document.getElementById('homeTeam').value.trim();
+            const awayTeam = document.getElementById('awayTeam').value.trim();
+            
+            if (!homeTeam || !awayTeam) {
+                alert('Please enter both teams');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('result').innerHTML = '<p>⏳ AI is analyzing the match...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/predict`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        home_team: homeTeam, 
+                        away_team: awayTeam 
+                    })
+                });
+                
+                const data = await response.json();
+                displayResult(data, homeTeam, awayTeam);
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    `<p style="color: red;">❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        function displayResult(data, homeTeam, awayTeam) {
+            if (data.success) {
+                const pred = data.prediction;
+                const html = `
+                    <h3>${homeTeam} vs ${awayTeam}</h3>
+                    <div class="prediction-item">🏠 <strong>Home Win:</strong> ${(pred.home_win * 100).toFixed(1)}%</div>
+                    <div class="prediction-item">🤝 <strong>Draw:</strong> ${(pred.draw * 100).toFixed(1)}%</div>
+                    <div class="prediction-item">✈️ <strong>Away Win:</strong> ${(pred.away_win * 100).toFixed(1)}%</div>
+                    <div class="prediction-item">🎯 <strong>Confidence:</strong> <span class="confidence">${(pred.confidence * 100).toFixed(1)}%</span></div>
+                    <p><em>AI analysis based on team statistics and historical performance</em></p>
+                `;
+                document.getElementById('result').innerHTML = html;
+            } else {
+                document.getElementById('result').innerHTML = 
+                    `<p style="color: red;">❌ Prediction failed: ${data.detail}</p>`;
+            }
+        }
+        
+        function showPremium() {
+            document.getElementById('result').innerHTML = `
+                <h3>🚀 Premium Features Coming Soon!</h3>
+                <p>We're building advanced features including:</p>
+                <ul>
+                    <li>📊 Historical performance analytics</li>
+                    <li>💰 Betting value identification</li>
+                    <li>🌍 Multiple league coverage</li>
+                    <li>⚡ Real-time updates</li>
+                </ul>
+                <p><strong>Contact us for early access:</strong> premium@soccerpredictor.com</p>
+            `;
+        }
+        
+        // Allow Enter key to trigger prediction
+        document.getElementById('awayTeam').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getPrediction();
+            }
+        });
+    </script>
+</body>
+</html>
