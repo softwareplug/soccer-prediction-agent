@@ -4,17 +4,17 @@ from app.api.routes import router
 
 app = FastAPI(title="Soccer Prediction API")
 
-# Configure CORS to allow requests from your Netlify domain
+# Fix CORS - Allow requests from your Netlify domain
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://soccer-prediction-agent-deployment.netlify.app",
-        "http://localhost:8000",  # For local testing
-        "http://localhost:3000",  # For local frontend development
+        "https://plug-predicts.netlify.app",  # Your Netlify domain
+        "http://localhost:3000",  # For local development
+        "http://localhost:8000",  # For local development
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Include your API routes
