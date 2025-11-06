@@ -1,50 +1,42 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from app.models.prediction_model import predict_match, SoccerPredictionModel
 
 router = APIRouter()
 
-# Define request model for prediction
 class PredictionRequest(BaseModel):
     home_team: str
     away_team: str
-
-@router.post("/predict")
-async def api_predict(request: PredictionRequest):
-    try:
-        prediction = predict_match(request.home_team, request.away_team)
-        return {
-            "success": True,
-            "prediction": prediction,
-            "match": f"{request.home_team} vs {request.away_team}"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/train")
-async def train_model():
-    try:
-        model = SoccerPredictionModel()
-        model.train('sample_data.csv')
-        return {
-            "success": True, 
-            "message": "Model trained successfully",
-            "teams_analyzed": len(model.team_stats)
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/health")
 async def health_check():
     return {"status": "healthy", "service": "soccer_predictor"}
 
-@router.get("/teams")
-async def get_teams():
+@router.post("/predict")
+async def predict_match(request: PredictionRequest):
     try:
-        model = SoccerPredictionModel()
-        if hasattr(model, 'team_stats') and model.team_stats:
-            return {"success": True, "teams": list(model.team_stats.keys())}
+        # Simple dummy prediction - replace with your ML model later
+        home_team = request.home_team.lower()
+        away_team = request.away_team.lower()
+        
+        if "arsenal" in home_team or "chelsea" in away_team:
+            home_win, draw, away_win = 0.6, 0.25, 0.15
+        elif "liverpool" in home_team or "man city" in away_team:
+            home_win, draw, away_win = 0.55, 0.25, 0.20
         else:
-            return {"success": True, "message": "No teams loaded. Train model first."}
+            home_win, draw, away_win = 0.5, 0.3, 0.2
+        
+        confidence = max(home_win, draw, away_win)
+        
+        return {
+            "success": True,
+            "prediction": {
+                "home_win": home_win,
+                "draw": draw,
+                "away_win": away_win,
+                "confidence": confidence
+            },
+            "match": f"{request.home_team} vs {request.away_team}"
+        }
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
