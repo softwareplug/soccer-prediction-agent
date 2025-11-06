@@ -1,0 +1,8 @@
+{
+  "name": "soccer-predictor-frontend",
+  "version": "1.0.0",
+  "description": "Static frontend for soccer prediction API",
+  "scripts": {
+    "build": "echo 'No build process'"
+  }
+}

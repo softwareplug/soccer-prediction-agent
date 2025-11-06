@@ -1,42 +1,174 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-
-router = APIRouter()
-
-class PredictionRequest(BaseModel):
-    home_team: str
-    away_team: str
-
-@router.get("/health")
-async def health_check():
-    return {"status": "healthy", "service": "soccer_predictor"}
-
-@router.post("/predict")
-async def predict_match(request: PredictionRequest):
-    try:
-        # Simple dummy prediction - replace with your ML model later
-        home_team = request.home_team.lower()
-        away_team = request.away_team.lower()
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Soccer Predictor Pro</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f0f2f5;
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1a73e8; text-align: center; }
+        .input-group { 
+            display: flex; 
+            gap: 10px; 
+            margin: 20px 0; 
+            flex-wrap: wrap;
+        }
+        input { 
+            padding: 12px; 
+            border: 2px solid #ddd; 
+            border-radius: 8px; 
+            flex: 1;
+            min-width: 200px;
+        }
+        button { 
+            padding: 12px 24px; 
+            background: #1a73e8; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            font-weight: bold;
+        }
+        #result { 
+            margin-top: 20px; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            border-radius: 8px; 
+            border-left: 4px solid #1a73e8;
+            min-height: 100px;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚽ Soccer Predictor Pro</h1>
+        <p>Enter any two soccer teams to get AI-powered match predictions</p>
         
-        if "arsenal" in home_team or "chelsea" in away_team:
-            home_win, draw, away_win = 0.6, 0.25, 0.15
-        elif "liverpool" in home_team or "man city" in away_team:
-            home_win, draw, away_win = 0.55, 0.25, 0.20
-        else:
-            home_win, draw, away_win = 0.5, 0.3, 0.2
+        <div class="input-group">
+            <input type="text" id="homeTeam" placeholder="Home Team (e.g., Arsenal)" value="Arsenal">
+            <input type="text" id="awayTeam" placeholder="Away Team (e.g., Chelsea)" value="Chelsea">
+            <button onclick="getPrediction()">🔮 Predict Match</button>
+        </div>
         
-        confidence = max(home_win, draw, away_win)
+        <div id="result">
+            <p>Enter teams above and click "Predict Match"</p>
+        </div>
+    </div>
+
+    <script>
+        // Use the correct backend URL
+        const API_BASE = "https://web-production-bba35.up.railway.app/api/v1";
         
-        return {
-            "success": True,
-            "prediction": {
-                "home_win": home_win,
-                "draw": draw,
-                "away_win": away_win,
-                "confidence": confidence
-            },
-            "match": f"{request.home_team} vs {request.away_team}"
+        async function getPrediction() {
+            const homeTeam = document.getElementById('homeTeam').value.trim();
+            const awayTeam = document.getElementById('awayTeam').value.trim();
+            
+            if (!homeTeam || !awayTeam) {
+                alert('Please enter both teams');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('result').innerHTML = `
+                <div style="text-align: center;">
+                    <div class="loading"></div>
+                    <p>AI is analyzing the match...</p>
+                </div>
+            `;
+            
+            try {
+                const response = await fetch(`${API_BASE}/predict`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        home_team: homeTeam, 
+                        away_team: awayTeam 
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                if (data.success) {
+                    displayPredictionResult(data);
+                } else {
+                    displayError(data.detail || 'Prediction failed');
+                }
+            } catch (error) {
+                console.error('Prediction error:', error);
+                displayError(`Connection error: ${error.message}. Please check if the backend is running.`);
+            }
         }
         
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        function displayPredictionResult(data) {
+            const pred = data.prediction;
+            const html = `
+                <h3>${data.match}</h3>
+                <p>🏠 Home Win: <strong>${(pred.home_win * 100).toFixed(1)}%</strong></p>
+                <p>🤝 Draw: <strong>${(pred.draw * 100).toFixed(1)}%</strong></p>
+                <p>✈️ Away Win: <strong>${(pred.away_win * 100).toFixed(1)}%</strong></p>
+                <p>🎯 Confidence: <strong>${(pred.confidence * 100).toFixed(1)}%</strong></p>
+                ${data.note ? `<p><em>${data.note}</em></p>` : ''}
+            `;
+            document.getElementById('result').innerHTML = html;
+        }
+        
+        function displayError(message) {
+            document.getElementById('result').innerHTML = `
+                <div style="color: #dc3545; text-align: center;">
+                    <p>❌ ${message}</p>
+                    <p><small>Check the browser console (F12) for more details.</small></p>
+                </div>
+            `;
+        }
+        
+        // Test backend connection on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    console.log('✅ Backend health check passed');
+                } else {
+                    console.error('❌ Backend health check failed');
+                }
+            } catch (error) {
+                console.error('❌ Cannot connect to backend:', error);
+            }
+        });
+    </script>
+</body>
+</html>
