@@ -1,4 +1,3 @@
-cat > test_live.py << 'EOF'
 import requests
 import json
 
