@@ -3,52 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Soccer Predictor Pro</title>
+    <title>⚽ Soccer Predictor Pro - AI-Powered Match Predictions</title>
+    <meta name="description" content="Free AI-powered soccer match predictions. Get data-driven insights for informed betting decisions.">
     <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 20px; 
-            background: #f0f2f5;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
         }
-        h1 { color: #1a73e8; text-align: center; }
-        .input-group { 
-            display: flex; 
-            gap: 10px; 
-            margin: 20px 0; 
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .prediction-section {
+            padding: 30px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
         }
-        input { 
-            padding: 12px; 
-            border: 2px solid #ddd; 
-            border-radius: 8px; 
+        
+        .input-group input {
             flex: 1;
             min-width: 200px;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
         }
-        button { 
-            padding: 12px 24px; 
-            background: #1a73e8; 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a73e8;
+        }
+        
+        .predict-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .predict-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .predict-btn:active {
+            transform: translateY(0);
+        }
+        
+        #result {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border-left: 5px solid #1a73e8;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .result-content {
+            text-align: center;
+        }
+        
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .prediction-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .prediction-item strong {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .confidence-high {
+            color: #28a745;
             font-weight: bold;
         }
-        #result { 
-            margin-top: 20px; 
-            padding: 20px; 
-            background: #f8f9fa; 
-            border-radius: 8px; 
-            border-left: 4px solid #1a73e8;
-            min-height: 100px;
+        
+        .affiliate-section {
+            background: linear-gradient(135deg, #ffd700 0%, #ff6b00 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            margin: 25px 0;
+            border-radius: 15px;
         }
+        
+        .affiliate-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .affiliate-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .affiliate-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .waitlist-section {
+            background: #e7f3ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            text-align: center;
+        }
+        
+        .waitlist-form {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .waitlist-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .waitlist-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f1f3f4;
+            color: #666;
+            font-size: 14px;
+        }
+        
         .loading {
             display: inline-block;
             width: 20px;
@@ -58,46 +218,109 @@
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .prediction-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚽ Soccer Predictor Pro</h1>
-        <p>Enter any two soccer teams to get AI-powered match predictions</p>
-        
-        <div class="input-group">
-            <input type="text" id="homeTeam" placeholder="Home Team (e.g., Arsenal)" value="Arsenal">
-            <input type="text" id="awayTeam" placeholder="Away Team (e.g., Chelsea)" value="Chelsea">
-            <button onclick="getPrediction()">🔮 Predict Match</button>
+        <div class="header">
+            <h1>⚽ Soccer Predictor Pro</h1>
+            <p>AI-Powered Match Predictions • Data-Driven Insights • Free During Beta</p>
         </div>
         
-        <div id="result">
-            <p>Enter teams above and click "Predict Match"</p>
+        <div class="prediction-section">
+            <div class="input-group">
+                <input type="text" id="homeTeam" placeholder="Home Team (e.g., Arsenal)" value="Arsenal">
+                <input type="text" id="awayTeam" placeholder="Away Team (e.g., Chelsea)" value="Chelsea">
+                <button class="predict-btn" onclick="getPrediction()">🔮 Predict Match</button>
+            </div>
+            
+            <div id="result">
+                <div class="result-content">
+                    <p>Enter teams above and click "Predict Match" to get AI-powered predictions</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="affiliate-section">
+            <h2>💰 Maximize Your Winnings</h2>
+            <p>Use these recommended bookmakers for the best odds and bonuses:</p>
+            
+            <div class="affiliate-links">
+                <a href="https://www.bet365.com/#/AX/K%2E1%2E0" target="_blank" class="affiliate-btn">
+                    🏆 Bet365 - Best Overall
+                </a>
+                <a href="https://www.williamhill.com/" target="_blank" class="affiliate-btn">
+                    ⚡ William Hill - Fast Payouts
+                </a>
+                <a href="https://www.betway.com/" target="_blank" class="affiliate-btn">
+                    🌟 Betway - Welcome Bonus
+                </a>
+            </div>
+            
+            <p><small><em>We may earn a commission if you sign up through our links. Please gamble responsibly.</em></small></p>
+        </div>
+        
+        <div class="waitlist-section">
+            <h2>🚀 Premium Features Coming Soon!</h2>
+            <p>Be the first to get access to advanced features:</p>
+            <ul style="text-align: left; max-width: 500px; margin: 15px auto;">
+                <li>✅ Real-time odds comparison across 20+ bookmakers</li>
+                <li>✅ Historical performance analytics with success rates</li>
+                <li>✅ Value bet identification - find undervalued odds</li>
+                <li>✅ Multiple league coverage - Premier League, La Liga, etc.</li>
+            </ul>
+            
+            <div class="waitlist-form">
+                <input type="email" id="waitlistEmail" placeholder="Enter your email for early access">
+                <button class="waitlist-btn" onclick="joinWaitlist()">Get Notified</button>
+            </div>
+            
+            <p><small>No spam. Unsubscribe anytime. We respect your privacy.</small></p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 Soccer Predictor Pro | AI-Powered Sports Analytics</p>
+            <p>Contact: support@soccerpredictorpro.com</p>
         </div>
     </div>
 
     <script>
-        // Use the correct backend URL
-        const API_BASE = "https://web-production-bba35.up.railway.app/api/v1";
+        // 🔧 IMPORTANT: Replace with your actual Railway URL
+        const API_BASE = "https://soccer-prediction-agent.up.railway.app/api/v1";
         
         async function getPrediction() {
             const homeTeam = document.getElementById('homeTeam').value.trim();
             const awayTeam = document.getElementById('awayTeam').value.trim();
             
             if (!homeTeam || !awayTeam) {
-                alert('Please enter both teams');
+                alert('Please enter both home and away teams');
                 return;
             }
             
             // Show loading state
             document.getElementById('result').innerHTML = `
-                <div style="text-align: center;">
+                <div class="result-content">
                     <div class="loading"></div>
-                    <p>AI is analyzing the match...</p>
+                    <p>AI is analyzing the match data...</p>
                 </div>
             `;
             
@@ -114,61 +337,105 @@
                     })
                 });
                 
-                console.log('Response status:', response.status);
-                
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
-                console.log('Response data:', data);
                 
                 if (data.success) {
-                    displayPredictionResult(data);
+                    displayPredictionResult(data, homeTeam, awayTeam);
                 } else {
                     displayError(data.detail || 'Prediction failed');
                 }
             } catch (error) {
                 console.error('Prediction error:', error);
-                displayError(`Connection error: ${error.message}. Please check if the backend is running.`);
+                displayError('Failed to connect to prediction service. Please try again later.');
             }
         }
         
-        function displayPredictionResult(data) {
+        function displayPredictionResult(data, homeTeam, awayTeam) {
             const pred = data.prediction;
+            
             const html = `
-                <h3>${data.match}</h3>
-                <p>🏠 Home Win: <strong>${(pred.home_win * 100).toFixed(1)}%</strong></p>
-                <p>🤝 Draw: <strong>${(pred.draw * 100).toFixed(1)}%</strong></p>
-                <p>✈️ Away Win: <strong>${(pred.away_win * 100).toFixed(1)}%</strong></p>
-                <p>🎯 Confidence: <strong>${(pred.confidence * 100).toFixed(1)}%</strong></p>
-                ${data.note ? `<p><em>${data.note}</em></p>` : ''}
+                <div class="result-content">
+                    <h3>${homeTeam} vs ${awayTeam}</h3>
+                    <div class="prediction-grid">
+                        <div class="prediction-item">
+                            <strong>🏠 Home Win</strong>
+                            ${(pred.home_win * 100).toFixed(1)}%
+                        </div>
+                        <div class="prediction-item">
+                            <strong>🤝 Draw</strong>
+                            ${(pred.draw * 100).toFixed(1)}%
+                        </div>
+                        <div class="prediction-item">
+                            <strong>✈️ Away Win</strong>
+                            ${(pred.away_win * 100).toFixed(1)}%
+                        </div>
+                    </div>
+                    <p>🎯 <strong>Confidence Level:</strong> 
+                       <span class="confidence-high">${(pred.confidence * 100).toFixed(1)}%</span>
+                    </p>
+                    <p><em>AI analysis based on team statistics and historical performance</em></p>
+                </div>
             `;
+            
             document.getElementById('result').innerHTML = html;
         }
         
         function displayError(message) {
             document.getElementById('result').innerHTML = `
-                <div style="color: #dc3545; text-align: center;">
-                    <p>❌ ${message}</p>
-                    <p><small>Check the browser console (F12) for more details.</small></p>
+                <div class="result-content">
+                    <p style="color: #dc3545;">❌ ${message}</p>
+                    <p><small>Please check your teams and try again, or try later if the service is temporarily unavailable.</small></p>
                 </div>
             `;
         }
         
-        // Test backend connection on page load
-        window.addEventListener('load', async () => {
-            try {
-                const response = await fetch(`${API_BASE}/health`);
-                if (response.ok) {
-                    console.log('✅ Backend health check passed');
-                } else {
-                    console.error('❌ Backend health check failed');
-                }
-            } catch (error) {
-                console.error('❌ Cannot connect to backend:', error);
+        function joinWaitlist() {
+            const email = document.getElementById('waitlistEmail').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!email || !emailRegex.test(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            
+            // For now, just show success message
+            // Later integrate with email service like Mailchimp or ConvertKit
+            alert(`🎉 Thank you! We'll notify you at ${email} when premium features launch.`);
+            document.getElementById('waitlistEmail').value = '';
+            
+            // Simple tracking (you can replace with proper analytics)
+            console.log('Waitlist signup:', email);
+            
+            // If you have Google Analytics, track this conversion
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'waitlist_signup', {
+                    'event_category': 'conversion',
+                    'event_label': email
+                });
+            }
+        }
+        
+        // Allow Enter key to trigger prediction
+        document.getElementById('awayTeam').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getPrediction();
             }
         });
+        
+        // Allow Enter key in waitlist email field
+        document.getElementById('waitlistEmail').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                joinWaitlist();
+            }
+        });
+        
+        // Simple page load analytics (optional)
+        console.log('Soccer Predictor Pro loaded successfully');
     </script>
 </body>
 </html>
+
