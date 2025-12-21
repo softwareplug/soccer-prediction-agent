@@ -13,4 +13,4 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     # Fixed: Pass the app as import string instead of object
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    web: gunicorn main:app --bind 0.0.0.0:$PORT
