@@ -1,17 +1,16 @@
-from flask import Flask, request, jsonify
-from prediction_model import SoccerPredictionModel
+from fastapi import FastAPI
+from app.api.routes import router
 
-app = Flask(__name__)
-model = SoccerPredictionModel('model.pkl')
+app = FastAPI(title="Soccer Prediction API")
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    payload = request.json
-    result = model.predict_from_payload(payload)   # implement this
-    return jsonify(result)
+# Include API routes
+app.include_router(router, prefix="/api/v1")
 
-@app.route('/health')
-def health():
-    return 'ok', 200
+@app.get("/")
+async def root():
+    return {"message": "Soccer Prediction API is running"}
 
-    web: gunicorn main:app --bind 0.0.0.0:$PORT
+if __name__ == "__main__":
+    import uvicorn
+    # Fixed: Pass the app as import string instead of object
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
